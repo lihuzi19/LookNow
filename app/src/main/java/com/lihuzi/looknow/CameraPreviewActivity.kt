@@ -75,7 +75,7 @@ class CameraPreviewActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun startCameraPreview(surface: SurfaceTexture) {
         val surface = Surface(surface)
-        //需要重新设置预览尺寸
+        //需要重新设置预览尺寸,否则显示异常
         val previewSize =
             cameraManager.getCameraCharacteristics(cameraId!!)
                 .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
