@@ -11,6 +11,8 @@ import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.view.Surface
 import android.view.TextureView
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 
@@ -29,6 +31,10 @@ class CameraPreviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         textureView = TextureView(this)
         setContentView(textureView)
+        textureView.layoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
 
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
         cameraId = cameraManager.cameraIdList[0]
@@ -69,11 +75,16 @@ class CameraPreviewActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun startCameraPreview(surface: SurfaceTexture) {
         val surface = Surface(surface)
-        val captureRequestBuilder =
+        val previewSize =
             cameraManager.getCameraCharacteristics(cameraId!!)
                 .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
                 .getOutputSizes(SurfaceTexture::class.java)[0]
+        textureView.layoutParams.apply {
+            height =
+                (resources.displayMetrics.widthPixels / previewSize.height.toFloat() * previewSize.width).toInt()
 
+            textureView.layoutParams = this
+        }
         cameraManager.openCamera(cameraId!!, object : CameraDevice.StateCallback() {
             override fun onOpened(camera: CameraDevice) {
                 val captureRequest =

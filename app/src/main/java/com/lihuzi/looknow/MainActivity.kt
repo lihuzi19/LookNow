@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(permissionList.toTypedArray(), 100)
         }
         if (checkoutPermissionList()) {
-            startActivity(Intent(this, PreviewActivity::class.java))
+            jumpToPreviewActivity()
         }
     }
 
@@ -36,13 +36,17 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    private fun jumpToPreviewActivity() {
+        startActivity(Intent(this, CameraPreviewActivity::class.java))
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
         if (requestCode == 100 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            startActivity(Intent(this, PreviewActivity::class.java))
+            jumpToPreviewActivity()
         } else {
             Toast.makeText(this, "请设置相机权限后重试", Toast.LENGTH_SHORT).show()
         }
